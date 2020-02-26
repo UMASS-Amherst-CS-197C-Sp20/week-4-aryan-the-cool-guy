@@ -41,34 +41,24 @@ int list_size(POINTER start) {
 void push_back(POINTER start, VALUE value) {
   // TODO, does nothing right now.
   POINTER step = start;
-  if(step == NULL)
-  {
-  	step = alloc(value);
-	return;
-  }
-  while(step->next != NULL)  
-  {
-  	step = step->next;
+  if(step!=NULL){
+  while(step->next != NULL){
+        step = step->next;
   }
   step->next = alloc(value);
-  return;
+  }
+  else{
+	step = alloc(value);
+  }	
 }
 
 bool list_equals_array(POINTER list, double* array, int array_len) {
   if (list_size(list) != array_len) return false;
   // TODO, do this better!
-  if(list_size == 0 && array_len == 0)
-  {
-  	return true;
-  }
-  POINTER step = list;
-  for(int i = 0; i < array_len; i++)
-  {
-  	if(step->value != *(array+i*sizeof(double)))
-  	{
-  		return false;
-  	}
-  list = list->next;	
+  for(int i = 0;((i<array_len)&&(list!=NULL));i++){
+	if(list->value != *(array+i))
+		return false;
+	list = list->next;
   }
   return true;
 }
@@ -88,45 +78,43 @@ POINTER push_front(VALUE value, POINTER list) {
 bool remove_value(POINTER start, VALUE value){
   //TODO
 
-  if(start == NULL)
-  {
-  	return 0;
+  if(start==NULL)
+	return 0;
+
+  if(start->next==NULL){
+	if(start->value==(value)){
+                start = NULL;
+                return true;
+        }
+	return false;
   }
-  if(start->next == NULL)
-  {
-  	if(start->value == (value))
-  	{
-  	start = NULL;
-  	return 1;
-  	}
-  return 0;
-  }
-  
-  if(start->next->next==NULL)
-  {
-	if(start->value==(value))
-  	{
+ 
+  if(start->next->next==NULL){
+	if(start->value==value){
 		start = start->next;
-		return 1;
-  	}
-	if(start->next->value==(value))
-  	{
-		start->next = NULL;
-		return 1;
+		return true;
 	}
-  	return 0;
-  }		
+	if(start->next->value==(value)){
+		start->next = NULL;
+		return true;
+	}
+	return false;
+  }
 
-
+  if(start->value==value){
+	start->value=start->next->value;
+	start->next=start->next->next;
+	return true;
+	}
   while(start->next->next != NULL){
-	if(start->next->value==(value))
-  	{
+	if(start->next->value==(value)){
 		start->next = start->next->next;
-		return 1;
+		return true;
 	}		
   	start=start->next;
-  }
-  return 0;
+  	}
+
+  return false;
 }
 
 // Given the start of a list, reverse the list and return the start after the reverse
@@ -135,22 +123,17 @@ bool remove_value(POINTER start, VALUE value){
 POINTER reverse_list(POINTER start){
   //TODO
   if(start==NULL)
-  {
-  	return NULL;
-  }
+	return NULL;
   if(start->next == NULL)
-  {
-  	return start;
-  } 
+	return start;
   POINTER prev = NULL;
   POINTER current = start->next;
-  while(current != NULL)
-  {
+  while(current != NULL){
 	start->next = prev;
 	prev = start;
 	start = current;
 	current = current->next;
-  }
+}
   start->next = prev;
   return start;
 }
